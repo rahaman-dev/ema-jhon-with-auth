@@ -1,14 +1,17 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import "./SignUp.css";
 import { Link } from "react-router-dom";
+import { AuthContext } from "../Provider/AuthProvider";
 
 const SignUp = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [showPass, setShowPass] = useState("password");
   const [error, setError] = useState("");
+  const { createUser } = useContext(AuthContext);
 
-  const handleLoginFormSubmit = (e) => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleSignUpFormSubmit = (e) => {
     e.preventDefault();
     let email = e.target.email.value;
     const password = e.target.password.value;
@@ -39,20 +42,15 @@ const SignUp = () => {
     }
     setError("");
 
-    console.log(
-      "email" + " " + email,
-      "password" +
-        " " +
-        password +
-        " " +
-        "firstName" +
-        " " +
-        firstName +
-        " " +
-        "lastName" +
-        " " +
-        lastName
-    );
+    createUser(email, password)
+      .then((result) => {
+        const loggedUser = result.user;
+        // console.log(loggedUser);
+      })
+      .catch((error) => {
+        // console.log(error);
+        setError(error.message);
+      });
   };
 
   const handleShowPass = () => {
@@ -62,7 +60,7 @@ const SignUp = () => {
   return (
     <div className="login-container">
       <h1>Please Create an Account</h1>
-      <form onSubmit={handleLoginFormSubmit}>
+      <form onSubmit={handleSignUpFormSubmit}>
         <label>Email:</label>
         <input type="email" name="email" placeholder="Enter Email" required />
         <br />
@@ -85,7 +83,7 @@ const SignUp = () => {
               width: "20px",
               position: "absolute",
               top: "-40px",
-              left: "380px",
+              left: "360px",
             }}
           >
             <path
